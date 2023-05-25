@@ -1,46 +1,64 @@
 
-//Ajout d'éléments dans la liste
+// Add elements in the task list
 
-    const form = document.getElementById('todo-form');
-    const input = document.getElementById('task-input');
+document.addEventListener('DOMContentLoaded', function() {
+    const addTaskBtn = document.getElementById('add-task-btn');
+    const taskInput = document.getElementById('task-input');
     const taskList = document.getElementById('task-list');
 
-     form.addEventListener('submit', function(event) {
-      event.preventDefault();
-      const task = input.value.trim();
-
-      if (task !== '') {
-        const li = document.createElement('li');
-        li.textContent = task;
-
-// Suppression d'éléments dans la liste
-        
-    const deleteButton = document.createElement('button');
-        deleteButton.textContent = 'Supprimer';
-        deleteButton.addEventListener('click', function() {
-          li.remove();
-        });
-        
-        li.appendChild(deleteButton);
-        taskList.appendChild(li);
-        input.value = '';
-      }
-           
+    addTaskBtn.addEventListener('click', function() {
+        const taskText = taskInput.value;
+        if (taskText !== '') {
+            const listItem = document.createElement('li');
+            listItem.className = 'task-item';
+            listItem.innerHTML = `
+                <span class="task-text">${taskText}</span>
+                <button class="delete-btn">Supprimer</button>
+            `;
+            taskList.appendChild(listItem);
+            taskInput.value = '';
+        }
     });
 
-    // Ajout d'autres listes
-    const addColumn = document.getElementById("add-column")
-
-        var item = document.getElementById("todo-column");
-        let i;
-        addColumn.addEventListener('click', function(event) {
-            event.preventDefault();
-            
-            var clone = item.cloneNode(true);
-            clone.id = `todo-column ${i++}`;
-            console.log(clone)
-            document.querySelector("body").appendChild(clone); 
+    taskList.addEventListener('click', function(event) {
+        if (event.target.classList.contains('delete-btn')) {
+            const listItem = event.target.closest('.task-item');
+            listItem.remove();
+        }
+    });
 });
 
-// var elem = document.querySelector('#some-element');
-//             elem.parentNode.removeChild(elem);
+// Add new list
+
+document.addEventListener('DOMContentLoaded', function() {
+    const newListBtn = document.getElementById('new-list-btn');
+    const listsContainer = document.getElementById('task-container');
+    let listCount = 0;
+
+    newListBtn.addEventListener('click', function() {
+        listCount++;
+        const newList = createTodoList(listCount);
+        listsContainer.appendChild(newList);
+    });
+
+    function createTodoList(count) {
+        const todoList = document.createElement('div');
+        todoList.className = 'todo-list';
+
+        const title = document.createElement('h2');
+        title.textContent = 'ToTool ' + count;
+        todoList.innerHTML = `
+        <div id="task-container">
+        <div class="original-container">
+            <input type="text" id="task-input" placeholder="Ajouter une tâche">
+            <button id="add-task-btn">Ajouter</button>
+            <ul id="task-list"></ul>
+        </div>
+    </div>
+            `;
+        const list = document.createElement('ul');
+        todoList.appendChild(list);
+
+        return todoList;
+    }
+});
